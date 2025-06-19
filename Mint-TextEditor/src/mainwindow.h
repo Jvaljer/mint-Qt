@@ -2,11 +2,14 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTextEdit>
+#include <QMenuBar>
+#include <QToolBar>
+#include <QStatusBar>
+#include <QLabel>
+#include <QAction>
 
 QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
@@ -17,7 +20,38 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    // Menu actions' slots
+    void newFile();
+    void openFile();
+    void saveFile();
+    void saveAsFile();
+    void exitApplication();
+
 private:
-    Ui::MainWindow *ui;
+    void setupUI();
+    void createMenus();
+    void createToolBars();
+    void createStatusBar();
+    void createActions();
+
+    // Main widgets
+    QTextEdit *textEditor;
+    // Menus
+    QMenu *fileMenu;
+    QMenu *editMenu;
+    QMenu *helpMenu;
+    // Actions
+    QAction *newAction;
+    QAction *openAction;
+    QAction *saveAction;
+    QAction *saveAsAction;
+    QAction *exitAction;
+    // Toolbars
+    QToolBar *fileToolBar;
+    QStatusBar *myStatusBar;
+    QLabel * statusLabel;
+    QLabel *positionLabel;
 };
+
 #endif // MAINWINDOW_H
