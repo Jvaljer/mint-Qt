@@ -74,6 +74,45 @@ void MainWindow::createActions()
     exitAction->setShortcut(QKeySequence::Quit); // Ctrl+Q
     exitAction->setStatusTip("Exit application");
     connect(exitAction, &QAction::triggered, this, &MainWindow::exitApplication);
+
+    // Editing actions
+    undoAction = new QAction("&Undo", this);
+    undoAction->setShortcut(QKeySequence::Undo); // Ctrl+Z
+    undoAction->setStatusTip("Cancel last action");
+    connect(undoAction, &QAction::triggered, textEditor, &QTextEdit::undo);
+
+    redoAction = new QAction("&Redo", this);
+    redoAction->setShortcut(QKeySequence::Redo); // Ctrl+Y
+    redoAction->setStatusTip("Put back last undone action");
+    connect(redoAction, &QAction::triggered, textEditor, &QTextEdit::redo);
+
+    cutAction = new QAction("&Cut", this);
+    cutAction->setShortcut(QKeySequence::Cut);
+    cutAction->setStatusTip("Cut selection");
+    connect(cutAction, &QAction::triggered, textEditor, &QTextEdit::cut);
+
+    copyAction = new QAction("&Copy", this);
+    copyAction->setShortcut(QKeySequence::Copy); // Ctrl+C
+    copyAction->setStatusTip("Copy selection to clipboard");
+    connect(copyAction, &QAction::triggered, textEditor, &QTextEdit::copy);
+
+    pasteAction = new QAction("&Paste", this);
+    pasteAction->setShortcut(QKeySequence::Paste); // Ctrl+V
+    pasteAction->setStatusTip("Paste clipboard's content");
+    connect(pasteAction, &QAction::triggered, textEditor, &QTextEdit::paste);
+
+    selectAllAction = new QAction("&Select all", this);
+    selectAllAction->setShortcut(QKeySequence::SelectAll); // Ctrl+A
+    selectAllAction->setStatusTip("Select all file's text");
+    connect(selectAllAction, &QAction::triggered, textEditor, &QTextEdit::selectAll);
+
+    // Automatic update of few actions
+    connect(textEditor, &QTextEdit::undoAvailable, undoAction, &QAction::setEnabled);
+    connect(textEditor, &QTextEdit::redoAvailable, redoAction, &QAction::setEnabled);
+    connect(textEditor, &QTextEdit::selectionChanged, this, &MainWindow::updateEditActions);
+
+    // Actions' initial state
+    updateEditActions();
 }
 
 void MainWindow::createMenus()
@@ -87,8 +126,16 @@ void MainWindow::createMenus()
     fileMenu->addAction(saveAsAction);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAction);
-    // Editing menu (empty yet)
+    // Editing menu
     editMenu = menuBar()->addMenu("&Edit");
+    editMenu->addAction(undoAction);
+    editMenu->addAction(redoAction);
+    editMenu->addSeparator();
+    editMenu->addAction(cutAction);
+    editMenu->addAction(copyAction);
+    editMenu->addAction(pasteAction);
+    editMenu->addSeparator();
+    editMenu->addAction(selectAllAction);
     // Help menu (empty yet)
     helpMenu = menuBar()->addMenu("&Help");
 }
@@ -100,6 +147,15 @@ void MainWindow::createToolBars()
     fileToolBar->addAction(newAction);
     fileToolBar->addAction(openAction);
     fileToolBar->addAction(saveAsAction);
+
+    // Edition toolbar
+    QToolBar *editToolBar = addToolBar("Edit");
+    editToolBar->addAction(undoAction);
+    editToolBar->addAction(redoAction);
+    editToolBar->addSeparator();
+    editToolBar->addAction(cutAction);
+    editToolBar->addAction(copyAction);
+    editToolBar->addAction(pasteAction);
 }
 
 void MainWindow::createStatusBar()
@@ -260,4 +316,14 @@ void MainWindow::updateWindowTitle()
         title += " *";
 
     setWindowTitle(title);
+}
+
+void MainWindow::updateEditActions()
+{
+    // Activate actions only on editor's specific states
+    bool hasSelection = textEditor->textCursor().hasSelection();
+
+    cutAction->setEnabled(hasSelection);
+    copyAction->setEnabled(hasSelection);
+    // paste is automatically handled by Qt (if clipboard has content)
 }

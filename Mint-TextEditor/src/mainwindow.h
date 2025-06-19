@@ -24,17 +24,6 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-private slots:
-    // Menu actions' slots
-    void newFile();
-    void openFile();
-    void saveFile();
-    void saveAsFile();
-    void exitApplication();
-    // Core features
-    void updateCursorPosition();
-    void updateWindowTitle();
-
 private:
     // Initialization methods
     void setupUI();
@@ -54,12 +43,19 @@ private:
     QMenu *fileMenu;
     QMenu *editMenu;
     QMenu *helpMenu;
-    // Actions
+    // User/File actions
     QAction *newAction;
     QAction *openAction;
     QAction *saveAction;
     QAction *saveAsAction;
     QAction *exitAction;
+    // Editing actions
+    QAction *undoAction;
+    QAction *redoAction;
+    QAction *cutAction;
+    QAction *copyAction;
+    QAction *pasteAction;
+    QAction *selectAllAction;
     // Toolbars
     QToolBar *fileToolBar;
     QStatusBar *myStatusBar;
@@ -68,6 +64,18 @@ private:
     // Core features
     bool documentModified;
     QString currentFilePath;
+
+private slots:
+    // Menu actions' slots
+    void newFile();
+    void openFile();
+    void saveFile();
+    void saveAsFile();
+    void exitApplication();
+    // Core features
+    void updateCursorPosition();
+    void updateWindowTitle();
+    void updateEditActions();
 
 protected:
     void closeEvent(QCloseEvent *event) override;
