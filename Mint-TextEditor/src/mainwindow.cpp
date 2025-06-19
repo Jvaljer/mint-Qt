@@ -4,6 +4,7 @@
 #include <QHBoxLayout>
 #include <QWidget>
 #include <QFileInfo>
+#include <QCloseEvent>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -113,30 +114,124 @@ void MainWindow::createStatusBar()
 
 void MainWindow::newFile()
 {
-    textEditor->clear();
-    setWindowTitle("Mint - Untitled");
-    statusLabel->setText("New document");
+    if (maybeSave()) {
+        textEditor->clear();
+        setCurrentFile("");
+        statusLabel->setText("New document created");
+    }
 }
 
 void MainWindow::openFile()
 {
-    statusLabel->setText("'openFile' still to implement ...");
+    if (maybeSave())
+    {
+        QString fileName = QFileDialog::getOpenFileName(this, "Open a file", "", "Text file (*.txt);;Markdown file (*.md);;All types (*.*)");
+
+        if (!fileName.isEmpty())
+        {
+            if (loadDocument(fileName))
+            {
+                setCurrentFile(fileName);
+                statusLabel->setText("File successfully opened");
+            }
+        }
+    }
 }
 
 void MainWindow::saveFile()
 {
-    statusLabel->setText("'saveFile' still to implement ...");
+    if (currentFilePath.isEmpty())
+        saveAsFile();
+    else
+        saveDocument(currentFilePath);
 }
 
 void MainWindow::saveAsFile()
 {
-    statusLabel->setText("'saveAsFile' still to implement ...");
+    QString fileName = QFileDialog::getSaveFileName(this, "Save as", "", "Text file (*.txt);;Markdown file (*.md);;All types (*.*)");
+
+    if (!fileName.isEmpty())
+    {
+        if (saveDocument(fileName))
+            setCurrentFile(fileName);
+    }
+}
+
+bool MainWindow::saveDocument(const QString &filePath)
+{
+    QFile file(filePath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this, "Error", QString("File couldn't be saved :\n%1").arg(file.errorString()));
+        return false;
+    }
+
+    QTextStream out(&file);
+    out << textEditor->toPlainText();
+
+    documentModified = false;
+    updateWindowTitle();
+    statusLabel->setText("Document saved");
+
+    return true;
+}
+
+bool MainWindow::loadDocument(const QString &filePath)
+{
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this, "Error", QString("File couldn't be opened :\n%1").arg(file.errorString()));
+        return false;
+    }
+
+    QTextStream in(&file);
+    textEditor->setPlainText(in.readAll());
+
+    documentModified = false;
+    updateWindowTitle();
+
+    return true;
+}
+
+bool MainWindow::maybeSave()
+{
+    if (!documentModified)
+        return true;
+
+    QMessageBox::StandardButton result = QMessageBox::question(this, "Document modified", "Document has been modified.\nDo you want to save its changes ?", QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+
+    switch (result)
+    {
+        case QMessageBox::Save:
+            return saveFile(), true;
+        case QMessageBox::Discard:
+            return true;
+        case QMessageBox::Cancel:
+            return false;
+        default:
+            return false;
+    }
+}
+
+void MainWindow::setCurrentFile(const QString &filePath)
+{
+    currentFilePath = filePath;
+    documentModified = false;
+    updateWindowTitle();
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    if (maybeSave())
+        event->accept();
+    else
+        event->ignore();
 }
 
 void MainWindow::exitApplication()
 {
-    statusLabel->setText("Closing ...");
-    QApplication::quit();
+    close(); // Triggers 'closeEvent'
 }
 
 void MainWindow::updateCursorPosition()

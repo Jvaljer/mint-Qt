@@ -8,6 +8,10 @@
 #include <QStatusBar>
 #include <QLabel>
 #include <QAction>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QTextStream>
+#include <QFileInfo>
 
 QT_BEGIN_NAMESPACE
 QT_END_NAMESPACE
@@ -32,11 +36,17 @@ private slots:
     void updateWindowTitle();
 
 private:
+    // Initialization methods
     void setupUI();
     void createMenus();
     void createToolBars();
     void createStatusBar();
     void createActions();
+    // File handling methods
+    bool saveDocument(const QString &filePath);
+    bool loadDocument(const QString &filePath);
+    bool maybeSave(); // ask if save is needed
+    void setCurrentFile(const QString &filePath);
 
     // Main widgets
     QTextEdit *textEditor;
@@ -58,6 +68,9 @@ private:
     // Core features
     bool documentModified;
     QString currentFilePath;
+
+protected:
+    void closeEvent(QCloseEvent *event) override;
 };
 
 #endif // MAINWINDOW_H
