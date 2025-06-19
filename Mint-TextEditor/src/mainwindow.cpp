@@ -3,6 +3,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QWidget>
+#include <QFileInfo>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -13,11 +14,22 @@ MainWindow::MainWindow(QWidget *parent)
     resize(1000, 700);
 
     // UI init
-    setupUI();
+    setupUI();    
     createActions();
     createMenus();
     createToolBars();
     createStatusBar();
+
+    // Features & functionnalities
+    connect(textEditor, &QTextEdit::cursorPositionChanged,this,&MainWindow::updateCursorPosition);
+    connect(textEditor, &QTextEdit::textChanged,this,[this](){
+        documentModified = true;
+        updateWindowTitle();
+    });
+
+    documentModified = false;
+    currentFilePath = "";
+    updateCursorPosition();
 }
 
 MainWindow::~MainWindow()
@@ -125,4 +137,32 @@ void MainWindow::exitApplication()
 {
     statusLabel->setText("Closing ...");
     QApplication::quit();
+}
+
+void MainWindow::updateCursorPosition()
+{
+    QTextCursor cursor = textEditor->textCursor();
+
+    int line = cursor.blockNumber() + 1;
+    int column = cursor.columnNumber() + 1;
+
+    positionLabel->setText(QString("Line: %1, Colonne: %2").arg(line).arg(column));
+}
+
+void MainWindow::updateWindowTitle()
+{
+    QString title = "Mint - ";
+
+    if (currentFilePath.isEmpty())
+        title += "Untitled";
+    else
+    {
+        QFileInfo fileInfo(currentFilePath);
+        title += fileInfo.fileName();
+    }
+
+    if (documentModified)
+        title += " *";
+
+    setWindowTitle(title);
 }

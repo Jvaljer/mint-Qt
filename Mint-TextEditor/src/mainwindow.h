@@ -27,6 +27,9 @@ private slots:
     void saveFile();
     void saveAsFile();
     void exitApplication();
+    // Core features
+    void updateCursorPosition();
+    void updateWindowTitle();
 
 private:
     void setupUI();
@@ -52,6 +55,9 @@ private:
     QStatusBar *myStatusBar;
     QLabel * statusLabel;
     QLabel *positionLabel;
+    // Core features
+    bool documentModified;
+    QString currentFilePath;
 };
 
 #endif // MAINWINDOW_H
