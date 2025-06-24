@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     documentModified = false;
     currentFilePath = "";
+    findDialog = nullptr;
     updateCursorPosition();
 }
 
@@ -74,6 +75,12 @@ void MainWindow::createActions()
     exitAction->setShortcut(QKeySequence::Quit); // Ctrl+Q
     exitAction->setStatusTip("Exit application");
     connect(exitAction, &QAction::triggered, this, &MainWindow::exitApplication);
+
+    // Search action
+    findAction = new QAction("&Search", this);
+    findAction->setShortcut(QKeySequence::Find); // Ctrl+F
+    findAction->setStatusTip("Search for text");
+    connect(findAction, &QAction::triggered, this, &MainWindow::showFindDialog);
 
     // Editing actions
     undoAction = new QAction("&Undo", this);
@@ -136,6 +143,8 @@ void MainWindow::createMenus()
     editMenu->addAction(pasteAction);
     editMenu->addSeparator();
     editMenu->addAction(selectAllAction);
+    editMenu->addSeparator();
+    editMenu->addAction(findAction);
     // Help menu (empty yet)
     helpMenu = menuBar()->addMenu("&Help");
 }
@@ -326,4 +335,14 @@ void MainWindow::updateEditActions()
     cutAction->setEnabled(hasSelection);
     copyAction->setEnabled(hasSelection);
     // paste is automatically handled by Qt (if clipboard has content)
+}
+
+void MainWindow::showFindDialog()
+{
+    if (!findDialog)
+        findDialog = new FindDialog(textEditor, this);
+
+    findDialog->show();
+    findDialog->raise();
+    findDialog->activateWindow();
 }

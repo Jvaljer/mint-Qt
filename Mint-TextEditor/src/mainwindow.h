@@ -13,6 +13,8 @@
 #include <QTextStream>
 #include <QFileInfo>
 
+#include "FindDialog.h"
+
 QT_BEGIN_NAMESPACE
 QT_END_NAMESPACE
 
@@ -56,6 +58,8 @@ private:
     QAction *copyAction;
     QAction *pasteAction;
     QAction *selectAllAction;
+    QAction *findAction;
+    FindDialog *findDialog;
     // Toolbars
     QToolBar *fileToolBar;
     QStatusBar *myStatusBar;
@@ -76,6 +80,8 @@ private slots:
     void updateCursorPosition();
     void updateWindowTitle();
     void updateEditActions();
+    // UI
+    void showFindDialog();
 
 protected:
     void closeEvent(QCloseEvent *event) override;

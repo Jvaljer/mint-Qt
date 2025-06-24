@@ -16,11 +16,13 @@ INCLUDEPATH += src
 # Sources folder
 SOURCES += \
     main.cpp \
-    src/MainWindow.cpp
+    src/MainWindow.cpp \
+    src/FindDialog.cpp
 
 # Header files
 HEADERS += \
-    src/MainWindow.h
+    src/MainWindow.h \
+    src/FindDialog.h
 
 # Interface files
 FORMS += \
