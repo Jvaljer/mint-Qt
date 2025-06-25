@@ -120,6 +120,8 @@ void MainWindow::createActions()
 
     // Actions' initial state
     updateEditActions();
+
+    applyMintTheme();
 }
 
 void MainWindow::createMenus()
@@ -345,4 +347,317 @@ void MainWindow::showFindDialog()
     findDialog->show();
     findDialog->raise();
     findDialog->activateWindow();
+}
+
+
+/* --------------- *
+ *    UI STYLES    *
+ * --------------- */
+void MainWindow::applyMintTheme()
+{
+    setStyleSheet(getMintStyleSheet());
+}
+
+QString MainWindow::getMintStyleSheet()
+{
+    const QString mainColor = "#4DD599";
+    const QString secondaryColor = "#00918E";
+    const QString accentColor1 = "#FFDC34";
+    const QString accentColor2 = "#110133";
+    const QString textColor1 = "#FFF3E1";
+    const QString bgLight = "#F8FFFE";
+    const QString bgWhite = "#FFFFFF";
+
+    return QString(R"(
+        /* === FENÊTRE PRINCIPALE === */
+        QMainWindow {
+            background-color: %1;
+            color: %2;
+        }
+
+        /* === ÉDITEUR DE TEXTE === */
+        QTextEdit {
+            background-color: %3;
+            color: %2;
+            border: 2px solid %1;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 11pt;
+            padding: 8px;
+            selection-background-color: %1;
+            selection-color: %2;
+        }
+
+        QTextEdit:focus {
+            border: 2px solid %4;
+            background-color: #FDFFFD;
+        }
+
+        /* === BARRE DE MENUS === */
+        QMenuBar {
+            background-color: %1;
+            color: %2;
+            font-weight: 500;
+            padding: 4px;
+            border-bottom: 2px solid %4;
+        }
+
+        QMenuBar::item {
+            background-color: transparent;
+            padding: 8px 16px;
+            border-radius: 4px;
+            margin: 2px;
+        }
+
+        QMenuBar::item:selected {
+            background-color: %4;
+            color: %5;
+        }
+
+        QMenuBar::item:pressed {
+            background-color: %6;
+            color: %2;
+        }
+
+        /* === MENUS DÉROULANTS === */
+        QMenu {
+            background-color: %3;
+            color: %2;
+            border: 2px solid %1;
+            border-radius: 6px;
+            padding: 4px;
+        }
+
+        QMenu::item {
+            padding: 8px 20px;
+            border-radius: 4px;
+            margin: 2px;
+        }
+
+        QMenu::item:selected {
+            background-color: %1;
+            color: %2;
+        }
+
+        QMenu::separator {
+            height: 2px;
+            background-color: %1;
+            margin: 4px 8px;
+        }
+
+        /* === BARRES D'OUTILS === */
+        QToolBar {
+            background-color: %1;
+            border: none;
+            padding: 4px;
+            spacing: 2px;
+        }
+
+        QToolBar::separator {
+            background-color: %4;
+            width: 2px;
+            margin: 4px 2px;
+        }
+
+        /* === BOUTONS D'ACTION === */
+        QToolBar QToolButton {
+            background-color: transparent;
+            color: %2;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            padding: 6px;
+            margin: 1px;
+            font-weight: 500;
+        }
+
+        QToolBar QToolButton:hover {
+            background-color: %4;
+            color: %5;
+            border: 1px solid %4;
+        }
+
+        QToolBar QToolButton:pressed {
+            background-color: %6;
+            color: %2;
+        }
+
+        QToolBar QToolButton:disabled {
+            background-color: transparent;
+            color: #A0A0A0;
+        }
+
+        /* === BARRE D'ÉTAT === */
+        QStatusBar {
+            background-color: %4;
+            color: %5;
+            border-top: 2px solid %1;
+            font-weight: 500;
+        }
+
+        QStatusBar QLabel {
+            color: %5;
+            padding: 4px 8px;
+        }
+
+        /* === DIALOGS ET BOUTONS === */
+        QDialog {
+            background-color: %7;
+            color: %2;
+        }
+
+        QPushButton {
+            background-color: %1;
+            color: %2;
+            border: 2px solid %1;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-weight: 500;
+            min-width: 80px;
+        }
+
+        QPushButton:hover {
+            background-color: %4;
+            color: %5;
+            border-color: %4;
+        }
+
+        QPushButton:pressed {
+            background-color: %6;
+            color: %2;
+            border-color: %6;
+        }
+
+        QPushButton:disabled {
+            background-color: #E0E0E0;
+            color: #A0A0A0;
+            border-color: #E0E0E0;
+        }
+
+        /* === CHAMPS DE SAISIE === */
+        QLineEdit {
+            background-color: %3;
+            color: %2;
+            border: 2px solid %1;
+            border-radius: 4px;
+            padding: 6px;
+            font-size: 10pt;
+        }
+
+        QLineEdit:focus {
+            border-color: %4;
+            background-color: #FDFFFD;
+        }
+
+        /* === CASES À COCHER === */
+        QCheckBox {
+            color: %2;
+            font-weight: 500;
+        }
+
+        QCheckBox::indicator {
+            width: 16px;
+            height: 16px;
+            border: 2px solid %1;
+            border-radius: 3px;
+            background-color: %3;
+        }
+
+        QCheckBox::indicator:checked {
+            background-color: %1;
+            border-color: %4;
+        }
+
+        QCheckBox::indicator:hover {
+            border-color: %4;
+        }
+
+        /* === LABELS === */
+        QLabel {
+            color: %2;
+        }
+
+        /* === GROUPBOX === */
+        QGroupBox {
+            color: %2;
+            font-weight: bold;
+            border: 2px solid %1;
+            border-radius: 6px;
+            margin-top: 10px;
+            padding-top: 4px;
+        }
+
+        QGroupBox::title {
+            subcontrol-origin: margin;
+            left: 10px;
+            padding: 0 8px 0 8px;
+            background-color: %1;
+            color: %2;
+            border-radius: 4px;
+        }
+
+        /* === SCROLLBARS === */
+        QScrollBar:vertical {
+            background-color: #F0F0F0;
+            width: 12px;
+            border-radius: 6px;
+        }
+
+        QScrollBar::handle:vertical {
+            background-color: %1;
+            border-radius: 6px;
+            min-height: 20px;
+        }
+
+        QScrollBar::handle:vertical:hover {
+            background-color: %4;
+        }
+
+        /* === COMBO BOX === */
+        QComboBox {
+            background-color: %3;
+            color: %2;
+            border: 2px solid %1;
+            border-radius: 4px;
+            padding: 6px;
+            min-width: 100px;
+        }
+
+        QComboBox:hover {
+            border-color: %4;
+        }
+
+        QComboBox::drop-down {
+            border: none;
+            width: 20px;
+        }
+
+        QComboBox::down-arrow {
+            width: 12px;
+            height: 12px;
+            image: none;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid %2;
+        }
+
+        /* === SPINBOX === */
+        QSpinBox {
+            background-color: %3;
+            color: %2;
+            border: 2px solid %1;
+            border-radius: 4px;
+            padding: 6px;
+        }
+
+        QSpinBox:focus {
+            border-color: %4;
+        }
+    )")
+        .arg(mainColor)      // %1
+        .arg(accentColor2)   // %2
+        .arg(bgWhite)        // %3
+        .arg(secondaryColor) // %4
+        .arg(textColor1)     // %5
+        .arg(accentColor1)   // %6
+        .arg(bgLight);       // %7
 }

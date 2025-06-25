@@ -27,6 +27,9 @@ public:
     ~MainWindow();
 
 private:
+    // UI styles
+    void applyMintTheme();
+    QString getMintStyleSheet();
     // Initialization methods
     void setupUI();
     void createMenus();
